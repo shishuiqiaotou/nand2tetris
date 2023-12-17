@@ -40,5 +40,25 @@ CHIP ALU {
         ng;      // (out < 0,  1, 0)
 
     PARTS:
-    //// Replace this comment with your code.
+    // Implementation of zx and zy
+    Mux16(a=false,b=x,sel=zx,out=outx1);
+    Mux16(a=false,b=y,sel=zy,out=outy1);
+
+    // Implementation of nx and ny
+    Not16(in=outx1,out=outx2);
+    Mux16(a=outx2,b=outx1,sel=nx,out=outx3);
+    Not16(in=outy1,out=outy2);
+    Mux16(a=outy2,b=outy1,sel=ny,out=outy3);
+
+    // Implementation of f
+    And16(a=outx3,b=outy3,out=temp1);
+    Add16(a=outx3,b=outy3,out=temp2);
+    Mux16(a=temp1,b=temp2,sel=f,out=out1);
+
+    // Implementation of no
+    Not16(in=out1,out=out2);
+    Mux16(a=out2,b=out1,sel=no,out=out);
+
+    // Implementation of output
+
 }
