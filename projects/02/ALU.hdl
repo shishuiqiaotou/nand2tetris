@@ -41,14 +41,14 @@ CHIP ALU {
 
     PARTS:
     // Implementation of zx and zy
-    Mux16(a=false,b=x,sel=zx,out=outx1);
-    Mux16(a=false,b=y,sel=zy,out=outy1);
+    Mux16(a=x,b=false,sel=zx,out=outx1);
+    Mux16(a=y,b=false,sel=zy,out=outy1);
 
     // Implementation of nx and ny
     Not16(in=outx1,out=outx2);
-    Mux16(a=outx2,b=outx1,sel=nx,out=outx3);
+    Mux16(a=outx1,b=outx2,sel=nx,out=outx3);
     Not16(in=outy1,out=outy2);
-    Mux16(a=outy2,b=outy1,sel=ny,out=outy3);
+    Mux16(a=outy1,b=outy2,sel=ny,out=outy3);
 
     // Implementation of f
     And16(a=outx3,b=outy3,out=temp1);
@@ -57,8 +57,13 @@ CHIP ALU {
 
     // Implementation of no
     Not16(in=out1,out=out2);
-    Mux16(a=out2,b=out1,sel=no,out=out);
+    Mux16(a=out1,b=out2,sel=no,out=out3);
+
+    // Implementation of zr and ng 
+    Or16Way(in=out3,out=out4);
+    Not(in=out4,out=zr);
+    And16(a=true,b=out3,out[15]=ng,out[0..14]=drop);
 
     // Implementation of output
-
+    Or16(a=out3,b=false,out=out);
 }
